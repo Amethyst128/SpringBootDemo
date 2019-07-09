@@ -1,0 +1,22 @@
+info:
+  name: mybatis拦截器实现Demo
+
+server:
+  port: 8081
+
+#配置mybatis相关文件位置
+mybatis:
+  mapper-locations: classpath*:mybatis-mapper/*Mapper.xml
+  config-location: classpath:mybatis-config.xml
+  #扫描domain的包名
+  aliasesPackage: com.zy.mybatisinterceptor.dao.model
+
+datasource:
+  driverLocation: C:\Users\admin\.m2\repository\mysql\mysql-connector-java\5.1.34\mysql-connector-java-5.1.34.jar
+  driver-class-name: com.mysql.jdbc.Driver
+  url: jdbc:mysql://127.0.0.1:3306/amethyst_test
+  username: root
+  password: root
+  ddl-auto: update
+  show-sql: true
+

@@ -1,0 +1,27 @@
+#配置mybatis相关文件位置
+mybatis:
+    mapper-locations: classpath*:mybatis-mapper/*Mapper.xml
+    config-location: classpath:mybatis-config.xml
+    #扫描domain的包名
+    aliasesPackage: com.zy.redisdemo.mapper.model
+
+
+#配置redis
+redis:
+    host: localhost
+    port: 6379
+    max-wait: 30000 #连接池最大阻塞等待时间（使用负值表示没有限制）
+    max-active: 100    #连接池最大连接数量（使用负值表示没有限制）
+    max-idle: 20     #连接池中的最大空闲连接
+    min-idle: 0      #连接池中的最小空闲连接
+    timeout: 3000    #连接超时
+
+
+#Spring Boot中默认配置ERROR、WARN和INFO级别的日志输出到控制台
+#业务log配置
+logging:
+    config: classpath:logback-spring.xml
+    path: /home/zhangyu/zhangyu-log/
+    level:
+        com.zy.redisdemo: DEBUG
+        com.ibatis: DEBUG
