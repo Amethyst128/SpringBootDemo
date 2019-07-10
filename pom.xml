@@ -18,6 +18,7 @@
         <module>redisdemo</module>
         <module>eventdemo</module>
         <module>mybatisinterceptor</module>
+        <module>mybatisgenerator</module>
     </modules>
 
 
@@ -121,20 +122,7 @@
     <!-- dependencyManagement管理的依赖，子项目不会继承 -->
     <dependencyManagement>
         <dependencies>
-            <!--<dependency>-->
-                <!--<groupId>org.springframework.boot</groupId>-->
-                <!--<artifactId>spring-boot-starter-web</artifactId>-->
-            <!--</dependency>-->
-            <!--<dependency>-->
-                <!--<groupId>org.springframework.boot</groupId>-->
-                <!--<artifactId>spring-boot-starter-web-services</artifactId>-->
-            <!--</dependency>-->
 
-            <!--<dependency>-->
-                <!--<groupId>org.springframework.boot</groupId>-->
-                <!--<artifactId>spring-boot-starter-test</artifactId>-->
-                <!--<scope>test</scope>-->
-            <!--</dependency>-->
         </dependencies>
     </dependencyManagement>
 
