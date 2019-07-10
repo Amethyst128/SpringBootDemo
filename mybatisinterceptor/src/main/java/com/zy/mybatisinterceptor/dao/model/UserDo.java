@@ -18,10 +18,10 @@ import java.util.Date;
 @NoArgsConstructor
 public class UserDo implements Serializable {
 
-    private Byte id;
+    private int id;
     private String userName;
     private String sex;
-    private Byte age;
+    private int age;
     private String phoneNumber;
     private String address;
     private String pwd;

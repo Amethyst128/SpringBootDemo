@@ -10,15 +10,14 @@ import com.zy.mybatisinterceptor.dao.model.UserDo;
  */
 public interface UserDoMapper {
 
-    int deleteByPrimaryKey(Byte id);
+    int deleteByPrimaryKey(Integer id);
 
-    int insert(UserDo record);
+    int insertUser(UserDo record);
 
-    int insertSelective(UserDo record);
-
-    UserDo selectByPrimaryKey(Byte id);
+    UserDo selectByPrimaryKey(Integer id);
 
     int updateByPrimaryKeySelective(UserDo record);
 
     int updateByPrimaryKey(UserDo record);
+
 }

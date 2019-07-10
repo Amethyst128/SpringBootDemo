@@ -1,22 +1,15 @@
 info:
-  name: mybatisÀ¹½ØÆ÷ÊµÏÖDemo
+  name: mybatisï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½Demo
+  contact: mybatisInterceptorDemo
 
 server:
-  port: 8081
+  port: 9800
 
-#ÅäÖÃmybatisÏà¹ØÎÄ¼şÎ»ÖÃ
+#é…ç½®mybatisç›¸å…³æ–‡ä»¶ä½ç½®
 mybatis:
   mapper-locations: classpath*:mybatis-mapper/*Mapper.xml
   config-location: classpath:mybatis-config.xml
-  #É¨ÃèdomainµÄ°üÃû
+  #æ‰«ædomainçš„åŒ…å
   aliasesPackage: com.zy.mybatisinterceptor.dao.model
-
-datasource:
-  driverLocation: C:\Users\admin\.m2\repository\mysql\mysql-connector-java\5.1.34\mysql-connector-java-5.1.34.jar
-  driver-class-name: com.mysql.jdbc.Driver
-  url: jdbc:mysql://127.0.0.1:3306/amethyst_test
-  username: root
-  password: root
-  ddl-auto: update
-  show-sql: true
-
+  #æ‰«æmapperæ–‡ä»¶åŒ…å
+  type-aliases-package: com.zy.mybatisinterceptor.dao.mapper

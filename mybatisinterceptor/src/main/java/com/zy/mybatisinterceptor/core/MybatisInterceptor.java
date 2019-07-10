@@ -10,14 +10,14 @@ import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
 import org.apache.ibatis.reflection.factory.ObjectFactory;
 import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
 import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
-import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 
 /**
  * @Description: mybatis 动态sql拦截器
@@ -28,6 +28,8 @@ import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
 @Slf4j
 public class MybatisInterceptor implements Interceptor {
+
+    private static final Logger logger = LoggerFactory.getLogger(SqlInterceptor.class);
 
     private static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
     private static final ObjectWrapperFactory DEFAULT_OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
@@ -50,7 +52,7 @@ public class MybatisInterceptor implements Interceptor {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LOGGER.info("sql error");
+            logger.info("sql error");
         }
         return null;
     }
