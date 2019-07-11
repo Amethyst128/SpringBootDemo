@@ -1,5 +1,7 @@
 package com.zy.mybatisinterceptor.dao.model;
 
+import com.zy.mybatisinterceptor.core.CreateTime;
+import com.zy.mybatisinterceptor.core.UpdateTime;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -26,7 +28,9 @@ public class UserDo implements Serializable {
     private String address;
     private String pwd;
     private String email;
+    @CreateTime
     private Date createTime;
+    @UpdateTime
     private Date updateTime;
     private String pwdQuestion;
     private String pwdAnswer;

@@ -75,12 +75,12 @@
       <if test="email != null" >
         email = #{email,jdbcType=VARCHAR},
       </if>
-      <if test="createTime != null" >
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null" >
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+      <!--<if test="createTime != null" >-->
+        <!--create_time = #{createTime,jdbcType=TIMESTAMP},-->
+      <!--</if>-->
+      <!--<if test="updateTime != null" >-->
+        <!--update_time = #{updateTime,jdbcType=TIMESTAMP},-->
+      <!--</if>-->
       <if test="pwdQuestion != null" >
         pwd_question = #{pwdQuestion,jdbcType=VARCHAR},
       </if>
@@ -100,8 +100,8 @@
       address = #{address,jdbcType=VARCHAR},
       pwd = #{pwd,jdbcType=VARCHAR},
       email = #{email,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
+--       create_time = #{createTime,jdbcType=TIMESTAMP},
+--       update_time = #{updateTime,jdbcType=TIMESTAMP},
       pwd_question = #{pwdQuestion,jdbcType=VARCHAR},
       pwd_answer = #{pwdAnswer,jdbcType=VARCHAR}
     where id = #{id,jdbcType=TINYINT}

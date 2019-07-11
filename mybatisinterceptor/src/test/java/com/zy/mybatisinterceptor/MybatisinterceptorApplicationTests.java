@@ -20,20 +20,20 @@ public class MybatisinterceptorApplicationTests {
     public void contextLoads() {
     }
 
-//    @Test
-//    public void createUser() {
-//        UserDo user = new UserDo();
-//        user.setAddress("浙江杭州")
-//                .setAge(23)
-//                .setPwd("123456")
-//                .setPwdQuestion("年份")
-//                .setPwdAnswer("2016")
-//                .setPhoneNumber("13888888888")
-//                .setSex("男")
-//                .setUserName("Amethyst");
-//        System.out.println("开始插入用户信息");
-//        userDoMapper.insertUser(user);
-//        System.out.println("插入用户成功");
-//    }
+    @Test
+    public void createUser() {
+        UserDo user = new UserDo();
+        user.setAddress("浙江杭州")
+                .setAge(23)
+                .setPwd("123456")
+                .setPwdQuestion("年份")
+                .setPwdAnswer("2016")
+                .setPhoneNumber("13888888888")
+                .setSex("男")
+                .setUserName("Amethyst");
+        System.out.println("开始插入用户信息");
+        userDoMapper.insertUser(user);
+        System.out.println("插入用户成功");
+    }
 
 }

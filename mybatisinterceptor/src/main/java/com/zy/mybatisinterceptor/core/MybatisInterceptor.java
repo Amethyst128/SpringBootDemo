@@ -12,7 +12,6 @@ import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
 import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.util.HashMap;
@@ -24,7 +23,7 @@ import java.util.Properties;
  * @Author: zhangyu
  * @Date:Created in 16:42 2019/7/9
  */
-@Component
+//@Component
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
 @Slf4j
 public class MybatisInterceptor implements Interceptor {

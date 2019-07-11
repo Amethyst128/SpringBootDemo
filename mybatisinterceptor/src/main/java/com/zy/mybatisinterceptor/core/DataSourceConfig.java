@@ -28,7 +28,9 @@ public class DataSourceConfig {
     public DataSource dataSource() {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mysql://127.0.0.1:3306/amethyst_test?charset=utf-8");
+        //最新版本的数据源
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+//        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
         dataSource.setUsername("root");
         dataSource.setPassword("rootroot");
         return dataSource;
