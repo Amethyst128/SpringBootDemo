@@ -2,6 +2,8 @@ package com.zy.mybatisinterceptor.core;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.Executor;
+import org.apache.ibatis.executor.parameter.ParameterHandler;
+import org.apache.ibatis.executor.resultset.ResultSetHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
@@ -9,9 +11,7 @@ import org.apache.ibatis.plugin.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import sun.plugin2.main.server.ResultHandler;
 
-import java.beans.Statement;
 import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.Properties;
@@ -29,6 +29,31 @@ import java.util.Properties;
 //        @Signature(type = Executor.class, method = "query", args = {Statement.class, ResultHandler.class})
 })
 public class SqlInterceptor implements Interceptor {
+//
+//    /**
+//     * org.apache.ibatis.executor.Executor;
+//     * 是 Mybatis 的内部执行器，它负责调用 StatementHandler 操作数据库，并把结果集通过 ResultSetHandler 进行自动映射，另外，它还处理了二级缓存的操作。
+//     * Executor创建StatementHandler对象,
+//     * 同时,创建ParameterHandler和ResultSetHandler对象,而ParameterHandler和ResultSetHandler都依赖TypeHandler;
+//     */
+//    Executor;
+//    /**
+//     * org.apache.ibatis.executor.statement.StatementHandler;
+//     * 是 Mybatis 直接和数据库执行 sql 脚本的对象，另外，它也实现了 Mybatis 的一级缓存。
+//     */
+//    StatementHandler;
+//    /**
+//     * org.apache.ibatis.executor.parameter.ParameterHandler;
+//     *  是 Mybatis 实现 sql 入参设置的对象。
+//     */
+//    ParameterHandler;
+//    /**
+//     * org.apache.ibatis.executor.resultset.ResultSetHandler;
+//     * 是 Mybatis 把 ResultSet 集合映射成 POJO 的接口对象。处理查询结果集;
+//     */
+//    ResultSetHandler;
+
+
 
     private static final Logger logger = LoggerFactory.getLogger(SqlInterceptor.class);
 
