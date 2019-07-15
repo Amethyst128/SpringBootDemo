@@ -1,0 +1,15 @@
+info:
+  name: mybatisPlusDemo
+  contact: mybatisInterceptorDemo
+
+server:
+  port: 8800
+
+#配置mybatis相关文件位置
+mybatis:
+  mapper-locations: classpath*:mybatis-plus-mapper/*Mapper.xml
+  config-location: classpath:mybatis-config.xml
+  #扫描domain的包名
+  aliasesPackage: com.zy.mybatisplusdemo.dao.model
+  #扫描mapper文件包名
+  type-aliases-package: com.zy.mybatisplusdemo.dao.mapper

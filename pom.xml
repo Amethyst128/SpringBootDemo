@@ -20,6 +20,7 @@
         <module>eventdemo</module>
         <module>mybatisinterceptor</module>
         <module>mybatisgenerator</module>
+        <module>mybatisplusdemo</module>
     </modules>
 
 
