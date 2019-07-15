@@ -27,7 +27,7 @@ public class DataSourceConfig {
     @Bean(name = "dataSource")
     public DataSource dataSource() {
         DruidDataSource dataSource = new DruidDataSource();
-        dataSource.setUrl("jdbc:mysql://127.0.0.1:3306/amethyst_test?useUnicode=true&characterEncoding=utf8");
+        dataSource.setUrl("jdbc:mysql://127.0.0.1:3306/amethyst_test?charset=utf-8");
         //最新版本的数据源
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
 //        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
@@ -42,7 +42,7 @@ public class DataSourceConfig {
 //        SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         MybatisSqlSessionFactoryBean mybatisSqlSessionFactoryBean = new MybatisSqlSessionFactoryBean();
         mybatisSqlSessionFactoryBean.setDataSource(dataSource());
-        mybatisSqlSessionFactoryBean.setTypeAliasesPackage("com.zy.mybatisplusdemo.dao.model");
+        mybatisSqlSessionFactoryBean.setTypeAliasesPackage(env.getProperty("mybatis.aliasesPackage"));
         mybatisSqlSessionFactoryBean.setConfigLocation(new PathMatchingResourcePatternResolver().getResource(env.getProperty("mybatis.config-location")));
         mybatisSqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(env.getProperty("mybatis.mapper-locations")));
         return mybatisSqlSessionFactoryBean.getObject();
