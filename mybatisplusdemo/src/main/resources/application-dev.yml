@@ -10,9 +10,6 @@ server:
 mybatis-plus:
   mapper-locations: classpath*:mybatis-plus-mapper/*Mapper.xml
   config-location: classpath:mybatis-config.xml
-  #实体扫描，多个package用逗号或者分号分隔
-  typeAliasesPackage: top.shen33.yang.model.po
-  #扫描domain的包名
   aliasesPackage: com.zy.mybatisplusdemo.dao.model
   #扫描mapper文件包名
   type-aliases-package: com.zy.mybatisplusdemo.dao.mapper
