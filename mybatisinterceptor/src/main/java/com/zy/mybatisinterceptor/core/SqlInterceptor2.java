@@ -1,3 +1,4 @@
+
 package com.zy.mybatisinterceptor.core;
 
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import java.util.Properties;
  * @Author: zhangyu
  * @Date:Created in 9:37 2019/7/10
  */
+@Deprecated
 @Slf4j
 //@Component
 //@Intercepts({@Signature(type = Executor.class, method = "prepare", args = {MappedStatement.class, Object.class})})

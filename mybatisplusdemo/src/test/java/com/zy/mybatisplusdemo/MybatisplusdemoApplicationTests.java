@@ -21,7 +21,12 @@ public class MybatisplusdemoApplicationTests {
     @Resource
     private UserDoMapper userDoMapper;
 
+    @Test
+    public void contextLoads() {
+    }
 
+
+    //============================普通的CRUD=====================================
     @Test
     public void createUser() {
         UserDo user = new UserDo();
@@ -32,7 +37,7 @@ public class MybatisplusdemoApplicationTests {
                 .setPwdAnswer("2018")
                 .setPhoneNumber("13888888888")
                 .setSex("男")
-                .setUserName("AmethMa");
+                .setUserName("zhangsan");
         System.out.println("开始插入用户信息");
         int result = userDoMapper.insert(user);
         if (result > 0) {
@@ -46,10 +51,11 @@ public class MybatisplusdemoApplicationTests {
     @Test
     public void selectUserByName() {
         Map map = new HashMap();
-        map.put("userName", "zhangsan");
-        userDoMapper.selectByMap(map);
+        //这里的map中的字段名需要和数据库表中的一致，不支持驼峰转换
+        map.put("user_name", "Amethyst");
+        List<UserDo> userList = userDoMapper.selectByMap(map);
+        System.out.println(userList);
     }
-
 
     @Test
     public void updateUser() {
@@ -62,17 +68,31 @@ public class MybatisplusdemoApplicationTests {
                 .setPhoneNumber("13888888888")
                 .setSex("男")
                 .setUserName("Amethyst");
-        userDoMapper.updateById(user);
+        int result = userDoMapper.updateById(user);
+        if (result > 0) {
+            System.out.println("修改用户成功");
+        } else {
+            System.out.println("修改用户失败");
+        }
     }
 
+    /**
+     * *问题：这个查找，找到的数据不正常；
+     *
+     * @Date 2019/7/16
+     */
     @Test
     public void getUserListByPage() {
         int pageSize = 10;
         int pageNumber = 3;
         Page<UserDo> page = new Page<>(pageNumber, pageSize);
         EntityWrapper<UserDo> entityWrapper = new EntityWrapper<>();
-        entityWrapper.eq("userName", "zhangsan");
-        userDoMapper.selectPage(page, entityWrapper);
+        entityWrapper.eq("user_name", "Amethyst");
+        List<UserDo> userDoList = userDoMapper.selectPage(page, entityWrapper);
+        System.out.println(userDoList);
     }
+
+    //========================================================================================
+
 
 }

@@ -39,7 +39,7 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
 
-    insert into m_user (user_name, sex,
+    insert into user_do (user_name, sex,
       age, phone_number, address,
       pwd, email, create_time,
       update_time, pwd_question, pwd_answer

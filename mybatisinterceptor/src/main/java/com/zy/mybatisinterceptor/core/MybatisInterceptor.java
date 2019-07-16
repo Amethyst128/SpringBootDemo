@@ -23,6 +23,7 @@ import java.util.Properties;
  * @Author: zhangyu
  * @Date:Created in 16:42 2019/7/9
  */
+@Deprecated
 //@Component
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
 @Slf4j

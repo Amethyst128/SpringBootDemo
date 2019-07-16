@@ -1,6 +1,7 @@
 package com.zy.mybatisplusdemo.core;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.baomidou.mybatisplus.entity.GlobalConfiguration;
 import com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -24,28 +25,40 @@ public class DataSourceConfig {
     @Autowired
     private Environment env;
 
+    /**
+     * 老的数据源：com.mysql.jdbc.Driver
+     * 最新数据源：com.mysql.cj.jdbc.Driver
+     */
     @Bean(name = "dataSource")
     public DataSource dataSource() {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mysql://127.0.0.1:3306/amethyst_test?charset=utf-8");
-        //最新版本的数据源
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-//        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
         dataSource.setUsername("root");
         dataSource.setPassword("rootroot");
         return dataSource;
     }
 
-    //要把mybatis对应的SqlSessionFactoryBean  改成mybatisPlus对应的MybatisSqlSessionFactoryBean
+    /**
+     * 1.要把mybatis对应的SqlSessionFactoryBean  改成mybatisPlus对应的MybatisSqlSessionFactoryBean
+     * 2.这里在mybatisSqlSessionFactoryBean.setDataSource(dataSource()); setDataSource的时候会报一个异常：java.lang.NoClassDefFoundError: org/springframework/jdbc/datasource/TransactionAwareDataSourceProxy； 异常原因：少一个JDBC的依赖；
+     *
+     * @Author zhangyu
+     * @Date 2019/7/16 9:33
+     */
     @Bean
-    public SqlSessionFactory sqlSessionFactory() throws Exception {
+    public MybatisSqlSessionFactoryBean sqlSessionFactory() throws Exception {
 //        SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         MybatisSqlSessionFactoryBean mybatisSqlSessionFactoryBean = new MybatisSqlSessionFactoryBean();
         mybatisSqlSessionFactoryBean.setDataSource(dataSource());
-        mybatisSqlSessionFactoryBean.setTypeAliasesPackage(env.getProperty("mybatis.aliasesPackage"));
-        mybatisSqlSessionFactoryBean.setConfigLocation(new PathMatchingResourcePatternResolver().getResource(env.getProperty("mybatis.config-location")));
-        mybatisSqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(env.getProperty("mybatis.mapper-locations")));
-        return mybatisSqlSessionFactoryBean.getObject();
-    }
+        mybatisSqlSessionFactoryBean.setTypeAliasesPackage(env.getProperty("mybatis-plus.aliasesPackage"));
+        mybatisSqlSessionFactoryBean.setConfigLocation(new PathMatchingResourcePatternResolver().getResource(env.getProperty("mybatis-plus.config-location")));
+        mybatisSqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(env.getProperty("mybatis-plus.mapper-locations")));
 
+        // MP 全局配置，更多内容进入类看注释，配置 mybatisPlus自定义填充类
+        GlobalConfiguration globalConfiguration = new GlobalConfiguration();
+        globalConfiguration.setMetaObjectHandler(new MetaObjectHandlerConfig());
+
+        return mybatisSqlSessionFactoryBean;
+    }
 }
