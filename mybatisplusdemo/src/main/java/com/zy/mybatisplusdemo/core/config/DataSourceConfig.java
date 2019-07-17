@@ -63,6 +63,9 @@ public class DataSourceConfig {
         globalConfig.setMetaObjectHandler(metaObjectHandler());
         mybatisSqlSessionFactoryBean.setGlobalConfig(globalConfig);
 
+        //手动设置mybatis的枚举类型定义路径
+        mybatisSqlSessionFactoryBean.setTypeEnumsPackage(env.getProperty("com.zy.mybatisplusdemo.core.enumerate"));
+
         return mybatisSqlSessionFactoryBean;
     }
 

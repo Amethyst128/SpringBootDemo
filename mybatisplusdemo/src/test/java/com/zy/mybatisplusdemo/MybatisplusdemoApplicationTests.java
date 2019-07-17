@@ -27,7 +27,6 @@ public class MybatisplusdemoApplicationTests {
     public void contextLoads() {
     }
 
-
     //测试insert方法，以及自动填充功能
     //测试insert is_deleted的值
     //测试insert枚举类属性
@@ -116,8 +115,5 @@ public class MybatisplusdemoApplicationTests {
         IPage<UserDo> userDoList = userDoMapper.selectPage(page, entityWrapper);
         System.out.println(userDoList);
     }
-
-    //========================================================================================
-
 
 }
