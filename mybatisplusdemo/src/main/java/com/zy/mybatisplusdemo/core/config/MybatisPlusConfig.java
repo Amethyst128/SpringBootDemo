@@ -1,14 +1,15 @@
-package com.zy.mybatisplusdemo.core;
+package com.zy.mybatisplusdemo.core.config;
 
-import com.baomidou.mybatisplus.mapper.ISqlInjector;
-import com.baomidou.mybatisplus.mapper.LogicSqlInjector;
-import com.baomidou.mybatisplus.plugins.OptimisticLockerInterceptor;
-import com.baomidou.mybatisplus.plugins.PaginationInterceptor;
-import com.baomidou.mybatisplus.plugins.PerformanceInterceptor;
+import com.baomidou.mybatisplus.core.injector.ISqlInjector;
+import com.baomidou.mybatisplus.extension.injector.LogicSqlInjector;
+import com.baomidou.mybatisplus.extension.plugins.OptimisticLockerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.PerformanceInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.Properties;
 
@@ -17,6 +18,7 @@ import java.util.Properties;
  * @Author: zy
  * @Date:Created in 16:27 2019/7/15
  */
+@EnableTransactionManagement
 @Configuration
 @MapperScan("com.zy.mybatisplusdemo.dao.mapper")
 public class MybatisPlusConfig {
@@ -56,7 +58,11 @@ public class MybatisPlusConfig {
 
     /**
      * 乐观锁插件
+     * 乐观锁的配置只需要两步
+     * 1. SpringBoot配置定义一下 乐观锁的插件Bean：OptimisticLockerInterceptor
+     * 2. 对应的字段必须使用@version注解；
      */
+    @Bean
     public OptimisticLockerInterceptor optimisticLockerInterceptor() {
         return new OptimisticLockerInterceptor();
     }

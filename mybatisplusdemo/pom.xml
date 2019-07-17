@@ -33,22 +33,41 @@
         </dependency>
 
         <!-- mp 依赖 -->
+        <!-- https://mvnrepository.com/artifact/com.baomidou/mybatisplus-spring-boot-starter -->
+        <!--<dependency>-->
+        <!--<groupId>com.baomidou</groupId>-->
+        <!--<artifactId>mybatisplus-spring-boot-starter</artifactId>-->
+        <!--<version>1.0.5</version>-->
+        <!--</dependency>-->
+        <!-- 下面这个依赖和下下一个依赖有冲突，只能取其中一个，下面这个是和SpringBoot整合之后的一个全家桶，拥有一些特定的注解等功能;还有个mybatis-plus的core核心包 -->
         <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>mybatisplus-spring-boot-starter</artifactId>
-            <version>1.0.5</version>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>3.1.2</version>
         </dependency>
+        <!-- Springmvc 依赖 -->
+        <!--<dependency>-->
+        <!--<groupId>com.baomidou</groupId>-->
+        <!--<artifactId>mybatis-plus</artifactId>-->
+        <!--<version>3.1.2</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus</artifactId>
-            <version>2.3</version>
+            <artifactId>mybatis-plus-extension</artifactId>
+            <version>3.1.2</version>
         </dependency>
+
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
             <version>4.2.5.RELEASE</version>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.baomidou</groupId>-->
+            <!--<artifactId>mybatis-plus-support</artifactId>-->
+            <!--<version>2.3</version>-->
+        <!--</dependency>-->
 
     </dependencies>
 
@@ -60,5 +79,13 @@
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>alimaven</id>
+            <name>aliyun maven</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
 
 </project>
