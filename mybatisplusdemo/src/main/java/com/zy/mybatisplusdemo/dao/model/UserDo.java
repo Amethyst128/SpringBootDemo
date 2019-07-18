@@ -51,6 +51,7 @@ public class UserDo implements Serializable {
      * 数据库字段：grade INT(2)
      */
 //    @JSONField(serialzeFeatures = SerializerFeature.WriteEnumUsingToString)
+    @TableField(value = "grade")
     public GradeEnum grade;
 
 
