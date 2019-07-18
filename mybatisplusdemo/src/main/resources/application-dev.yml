@@ -13,7 +13,7 @@ Spring:
 ##mybatis plus
 mybatis-plus:
   #支持通配符*或者;分割-------只对注解方式的枚举处理能提前加载缓存.
-  typeEnumsPackage: com.zy.mybatisplusdemo.core.enumerate
+  type-enums-package: com.zy.mybatisplusdemo.core.enumerate
 
   mapper-locations: classpath*:mybatis-plus-mapper/*Mapper.xml
   config-location: classpath:mybatis-config.xml
