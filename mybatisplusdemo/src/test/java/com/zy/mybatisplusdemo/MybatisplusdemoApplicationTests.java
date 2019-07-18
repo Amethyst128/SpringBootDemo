@@ -29,7 +29,7 @@ public class MybatisplusdemoApplicationTests {
 
     //测试insert方法，以及自动填充功能
     //测试insert is_deleted的值
-    //测试insert枚举类属性
+    //测试insert枚举类属性---没有成功，不知道为什么
     @Test
     public void createUser() {
         UserDo user = new UserDo();
