@@ -22,7 +22,6 @@ import java.util.Date;
  * @Author zy
  * @Date 2019/7/17
  */
-
 @Deprecated
 @Component
 public class MetaObjectHandlerConfig implements MetaObjectHandler {

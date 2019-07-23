@@ -116,4 +116,12 @@ public class MybatisplusdemoApplicationTests {
         System.out.println(userDoList);
     }
 
+
+    //测试sql注入器
+    @Test
+    public void testSqlInjector() {
+        List<UserDo> userDoList = userDoMapper.selectListBackEnd
+                (new QueryWrapper<UserDo>().eq("id", 1).eq("age", "24"));
+    }
+
 }

@@ -4,7 +4,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
-import org.apache.ibatis.reflection.MetaClass;
+import com.zy.mybatisplusdemo.core.config.sqlInjector.MySqlInjector;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -61,6 +61,8 @@ public class DataSourceConfig {
         // MP 全局配置，更多内容进入类看注释，配置 mybatisPlus自定义填充类，------并设置到mybatisSqlSessionFactoryBean中；
         GlobalConfig globalConfig = new GlobalConfig();
         globalConfig.setMetaObjectHandler(metaObjectHandler());
+        //在globalConfig中设置自定义的sql注入器
+        globalConfig.setSqlInjector(new MySqlInjector());
         mybatisSqlSessionFactoryBean.setGlobalConfig(globalConfig);
 
         //手动设置mybatis的枚举类型定义路径
@@ -71,6 +73,7 @@ public class DataSourceConfig {
 
     /**
      * 自定义填充器
+     *
      * @param
      * @Author zy
      * @Date 2019/7/17
