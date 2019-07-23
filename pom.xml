@@ -22,6 +22,7 @@
         <module>mybatisgenerator</module>
         <module>mybatisplusdemo</module>
         <module>threadpooldemo</module>
+        <module>mongodbdemo</module>
     </modules>
 
 
