@@ -23,6 +23,8 @@
         <module>mybatisplusdemo</module>
         <module>threadpooldemo</module>
         <module>mongodbdemo</module>
+        <module>rabbitmq-demo</module>
+        <module>threaddemo</module>
     </modules>
 
 
