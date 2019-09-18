@@ -25,6 +25,8 @@
         <module>mongodbdemo</module>
         <module>rabbitmq-demo</module>
         <module>threaddemo</module>
+        <module>threadpooldemo</module>
+        <module>test</module>
     </modules>
 
 
