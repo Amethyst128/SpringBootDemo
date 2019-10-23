@@ -8,6 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RunWith(SpringRunner.class)
@@ -34,7 +36,7 @@ public class TestApplicationTests {
 
     /**
      * @desc 测试 怎么样会报空指针异常
-     *
+     * <p>
      * 总结：
      * 1. null使用等号 不会抛异常；
      * 2. null使用equals时，使用null调用equals会报空指针异常
@@ -165,4 +167,32 @@ public class TestApplicationTests {
         return a;
     }
 
+
+    //-------------------------测试时间转换------------------------------------
+
+    @Test
+    public void testDateUtils() {
+        String time = "1570524844858";
+        Date date = numberDateFormatToDate(time);
+        System.out.println(date);
+    }
+
+    private static final String IOS_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+
+    public static Date numberDateFormatToDate(String timestamp) {
+        SimpleDateFormat sdf = new SimpleDateFormat(IOS_DATE_FORMAT);
+        Date date = null;
+        try {
+            if (timestamp.length() == 13) {
+                date = sdf.parse(sdf.format(Long.parseLong(timestamp)));
+            } else {
+                date = sdf.parse(sdf.format(Long.parseLong(timestamp) * 1000));
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+
+    //------------------------------------------------------------
 }
