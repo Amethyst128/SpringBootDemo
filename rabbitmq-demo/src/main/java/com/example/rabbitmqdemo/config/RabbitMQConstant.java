@@ -10,7 +10,9 @@ public class RabbitMQConstant {
     /**
      * 消息交换机
      */
-    public static final String QUEUE_MESSAGE = "message_queue";
+    public static final String EXCHANGE_MESSAGE_CALLBACK = "message_callback_exchange";
+
+    public static final String ROUTING_KEY_MESSAGE_CALLBACK = "message_callback_routing_key";
 
     /**
      * 队列
