@@ -5,7 +5,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -29,10 +32,30 @@ public class AnyTest {
             System.out.println("aaaaaaaaaaaaaaa");
         }
         // 长度不是23
-        if (str.length() != 23){
+        if (str.length() != 23) {
             System.out.println("bbb");
         }
+    }
 
+    @Test
+    public void testStr() {
+        String a = "aaaaa/bbbbb:ccccc";
+        String b = a.split("/")[0];
+        String c = a.split(":")[0];
+        System.out.println("b=" + b + "c=" + c);
+    }
+
+    @Test
+    public void testLongValue() {
+        String successObject = null;
+        Long successCount = Long.valueOf(successObject);
+    }
+
+
+    @Test
+    public void testNPE() {
+        List<String> a = new ArrayList<>();
+        a.forEach(t->t.length());
     }
 
 
