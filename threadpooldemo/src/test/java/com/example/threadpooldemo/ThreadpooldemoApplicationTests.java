@@ -9,9 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.*;
 
 
 @SpringBootApplication
@@ -45,12 +43,13 @@ public class ThreadpooldemoApplicationTests {
     }
 
     @Test
-    public void test02() {
+    public void test02() throws InterruptedException {
         log.info("进入test02方法");
         xTaskExecutor.execute(() -> {
             log.info("执行异步代码块");
             log.info("异步代码块执行完成");
         });
+        Thread.sleep(10);
         log.info("在执行异步代码块之前结束");
     }
 
@@ -67,7 +66,7 @@ public class ThreadpooldemoApplicationTests {
         log.info("进入test03方法");
         asyncTaskTest.test04();
         asyncTaskTest.test05();
-        Thread.sleep(10);
+        Thread.sleep(20);
         log.info("test03-在执行异步代码块之前结束");
     }
 
@@ -103,12 +102,17 @@ public class ThreadpooldemoApplicationTests {
     }
 
     /**
-     * @desc todo : 这个的测试有点问题。
+     * @desc CyclicBarrier 实现
+     * todo : 这个的测试有点问题。
+     * 问题已解决：
+     * 问题定位为：死锁问题
+     * 这里的问题点是：CyclicBarrier的原理是设置一个等待屏障，只有当所有线程都达到这个屏障（即都执行完成），才会继续往下执行。也就是说，这里线程的执行是不会释放当前占用的线程资源的；
+     * 解决方式：如果是使用线程池的同时使用CyclicBarrier的话，则线程池中初始化的线程数量一定要大于屏障CyclicBarrier所设置的大小；否则死锁；
      */
     @Test
-    public void cyclicBarriesTest() throws BrokenBarrierException, InterruptedException {
+    public void cyclicBarrierTest() throws BrokenBarrierException, InterruptedException {
         final CyclicBarrier cyclicBarrier = new CyclicBarrier(5);
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 5; i++) {
             int finalI = i;
             xTaskExecutor.execute(() -> {
                 log.info("xTaskExecutor-" + finalI + "开始执行...");
@@ -123,9 +127,65 @@ public class ThreadpooldemoApplicationTests {
             });
         }
         log.info("主线程等待子线程...");
+        //todo 两次调用await()的意义？？？
         cyclicBarrier.await();
         log.info("主线程执行完毕...");
     }
 
+    @Test
+    public void cyclicBarrierTest2() {
+        System.out.println("运动员准备进场，全场欢呼............");
+
+        // 指定必须有 6 个运动员到达才行
+        CyclicBarrier barrier = new CyclicBarrier(6, () -> {
+            System.out.println("所有运动员入场，裁判员一声令下！！！！！");
+        });
+
+        ExecutorService service = Executors.newFixedThreadPool(6);
+        for (int i = 0; i < 6; i++) {
+            service.execute(() -> {
+                try {
+                    System.out.println(Thread.currentThread().getName() + " 运动员，进场");
+                    // 等到所有的线程都到达指定的临界点
+                    barrier.await();
+                    System.out.println(Thread.currentThread().getName() + "  运动员出发");
+                } catch (InterruptedException | BrokenBarrierException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+        log.info("运动员全部到达，可以开始比赛啦...");
+    }
+
+
+    /**
+     * @desc join()实现
+     * - thread.join()把指定的线程加入到当前线程，将两个交替执行的线程 合并为顺序执行的线程
+     * @Author zy
+     * @Date 2019/11/12
+     */
+    @Test
+    public void joinTest() {
+        WorkThread thread1 = new WorkThread();
+        WorkThread thread2 = new WorkThread();
+        thread1.start();
+        thread2.start();
+        //阻塞Main线程，执行子线程workThread1和workThread2，完毕后继续执行后续的逻辑
+        try {
+            thread1.join();
+            thread2.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        log.info("主线程等待子线程...");
+        log.info("主线程执行完毕...");
+    }
+    public class WorkThread extends Thread {
+        @Override
+        public void run() {
+            log.info(getName() + "开始执行");
+            log.info(getName() + "执行完成");
+        }
+    }
 
 }

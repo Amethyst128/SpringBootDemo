@@ -20,11 +20,11 @@ spring:
 # custom thread pool configuration
 thread:
   pool:
-    corePoolSize: 3
-    maxPoolSize: 5
-    queueCapacity: 20
-    keepAliveSeconds: 30
-    allowCoreThreadTimeOut: true
-#    threadNamePrefix: custom-thread-
-    waitForTasksToCompleteOnShutdown: true
-    rejectedExecutionHandler: AbortPolicy
+      corePoolSize: 5
+      maxPoolSize: 5
+      queueCapacity: 20
+      keepAliveSeconds: 30
+      allowCoreThreadTimeOut: true
+      threadNamePrefix: custom-thread-
+      waitForTasksToCompleteOnShutdown: true
+      rejectedExecutionHandler: AbortPolicy
