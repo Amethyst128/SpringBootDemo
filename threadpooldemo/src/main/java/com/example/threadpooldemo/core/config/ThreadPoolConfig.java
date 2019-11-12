@@ -1,9 +1,8 @@
 package com.example.threadpooldemo.core.config;
 
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import lombok.var;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,13 +40,12 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 @EnableAsync
 @Configuration
+@Slf4j
 public class ThreadPoolConfig {
-
-    private static final Logger logger = LoggerFactory.getLogger(ThreadPoolConfig.class);
 
     @Bean("taskExecutor")
     public Executor taskExecutor() {
-        logger.info("configuration taskExecutor---");
+        log.info("configuration taskExecutor---");
 
         var executor = new ThreadPoolTaskExecutor();
         /*
@@ -111,6 +109,12 @@ public class ThreadPoolConfig {
 
     //----------------------------------------------------------------------
 
+    /**
+     * @desc 线程池thread.pool  - xTaskExecutor 加了代码配置和配置文件配置
+     * - 如果配置文件对某个属性重配置，则Spring在处理的时候，加载了配置文件中的属性配置，并覆盖了代码中的属性；
+     * @Author zy
+     * @Date 2019/11/12
+     */
     @Data
     @Configuration
     @ConfigurationProperties(prefix = "thread.pool")
@@ -126,7 +130,7 @@ public class ThreadPoolConfig {
 
         @Bean("xTaskExecutor")
         public Executor xxxTaskExecutor() {
-            logger.info("config xxx task configuraion");
+            log.info("config xxx task configuraion");
             var executor = new ThreadPoolTaskExecutor();
             executor.setCorePoolSize(corePoolSize);
             executor.setMaxPoolSize(maxPoolSize);
