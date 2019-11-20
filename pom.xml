@@ -27,6 +27,7 @@
         <module>threaddemo</module>
         <module>threadpooldemo</module>
         <module>test</module>
+        <module>aspect</module>
     </modules>
 
 
