@@ -78,7 +78,9 @@ public class ThreadpooldemoApplicationTests {
      * 实现方式有三种： join()及 CountDownLatch 和 CyclicBarrier
      * - join() thread.join()把指定的线程加入到当前线程，将两个交替执行的线程 合并为顺序执行的线程
      * - CountDownLatch 并发工具类
-     * - CyclicBarrier  一个同步辅助类，用于协调多个子线程，让多个子线程在这个屏障前等待，直到所有子线程都到达了这个屏障时，再一起继续执行后面的动作。 和CountDownLatch区别是：CyclicBarrier设置一个信号值，最终再提交一次，而CountDownLatch 是每次子线程执行完成，都对信号量进行改变，并提高信号量的值给主线程；
+     * - CyclicBarrier  一个同步辅助类，用于协调多个子线程，让多个子线程在这个屏障前等待，直到所有子线程都到达了这个屏障时，
+     *  再一起继续执行后面的动作。 和CountDownLatch区别是：CyclicBarrier设置一个信号值，最终再提交一次，而CountDownLatch 是每次子线程执行完成，
+     *  都对信号量进行改变，并提高信号量的值给主线程；
      */
 
     /**
