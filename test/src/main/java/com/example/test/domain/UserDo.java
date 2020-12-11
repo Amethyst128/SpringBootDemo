@@ -4,6 +4,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @Desc:
  * @Author: zy
@@ -18,5 +21,8 @@ public class UserDo {
     private Integer age;
     private String sex;
     private Integer grade;
+    private List<String> listThings;
+    private Map<String,String> MapString;
+    private Student student;
 
 }
