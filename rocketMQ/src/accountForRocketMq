@@ -1,0 +1,197 @@
+
+
+RocketMq：
+    是一款开源的分布式系统消息， 基于高可用的分布式集群技术， 提供低延时的/高可靠的消息发布与订阅服务；
+    建议直接下载官网的项目，其中有很多docs文档， 帮助你很快了解到到第一手的MQ基础知识。http://rocketmq.apache.org/docs/quick-start/ 下在项目查看。
+
+一、简介
+   1.组成：
+        NameServer
+        Broker
+        Producer
+        Consumer
+
+   2. 分别是什么 做什么用？
+        * NameServer:
+            (1) NameServer相当于一个路由控制中心（协同着），维护Broker集群、Broker信息、Broker存活信息、主题与队列信息等。
+            NameServer彼此之间不通信，每个Broker与集群内所有的Broker保持长连接。
+        * Broker 消息中转角色，负责存储和转发消息。
+           （1）与NameServer保持长链接， 固定时间发送心跳包：包括 IP+端口+Topic信息， 所以NameServer中存储着所有的Topic信息和Broker的关系；
+           （2）Bocker通常为了达到高可用的目的，都配置为集群的形式； Broker的master和slave之间不是读写分离的模式，slave与master之间的关系，slave pull from master；
+           （3）Boker有**30秒心跳机制**，告诉NameServer自己还活着； NameServer有**120s故障检测机制**， 会去查询Broker心跳间隔是否超过120s；
+           （4）一个Master可以对应多个Slave，但是一个Slave只能对应一个Master。Master和Slave的对应关系通过指定相同的BrokerName，
+                不同的BrokerId来定义。BrokerId为0表示Master，BrokerId非0表示Slave。然后所有的Broker和Name Server上的节点建立长连接,定时注册Topic信息到所有Name Server。
+        * Producer
+           （1）先与NameServer建立长链接， 获取当前要发送的Topic信息是在哪些Broker上； （拉取Boker的路由信息）
+           （2）并与提供该topic的Master建立长链接；
+           （3）然后轮询选择一个队列， 并与队列所在的Broker建立长链接，从而向Broker发送消息；
+        * Consumer
+           （1）与Producer相似， 先在NameServer上查询到Topic所在的Broker信息， 然后与对应的Broker建立长链接， 进行消息消费；
+           （2）Consumer与NameServer集群中的额其中一个节点建立长链接， 定期从NameServer取Topic的路由信息，
+               并和提供Topic的Master和Slave建立长链接， 定时向Master和Slave发送心跳。Consumer既可以从Master订阅消息，也可以从Slave订阅消息，订阅的规则由Broker配置决定；
+
+
+   3. 特性：
+        * 支持集群、效率高、支持消息持久化
+        * 消息失败重试机制； （**实践一下**）
+        * 海量消息堆积能力，消息堆积后，写入低延迟；
+        * 支持上万个队列；
+        * 消息可以查询；
+        * 强调集群无单点，可扩展，任意一点高可用，水平可扩展；
+
+   4. rocketMQ的一些关键概念：
+        （1） 主题topic
+        （2） 标签tags
+
+   5. rocketMq的存储特点
+       consumer消费消息的过程，使用了零拷贝。
+        其中 零拷贝有俩种方式：
+        （1）使用mmap+write的方式
+            优点： 即使频繁的调用，使用小块文件传输的效率依旧很高；
+            缺点:  不能很好的利用DMA方式， 比sendFile多消耗CPU，内存安全性控制复杂，需要避免JVMCrash的问题；
+        （2）使用sendfile方式
+            优点： 可以利用DMA方式，消耗CPU少，大块文件传输效率高，没有内存安全的问题；
+            缺点： 小块文件的传输效率要低于mmap方式， 只能是BIO，不能使用NIO的方式；
+                扩展： BIO、NIO、AIO：
+                https://github.com/Snailclimb/JavaGuide/blob/master/docs/java/basis/BIO%2CNIO%2CAIO%E6%80%BB%E7%BB%93.md
+                   这里简述一下：
+                    IO模型主要分类：
+                        同步(synchronous) IO和异步(asynchronous) IO
+                        阻塞(blocking) IO和非阻塞(non-blocking)IO
+                        同步阻塞(blocking-IO)简称BIO
+                        同步非阻塞(non-blocking-IO)简称NIO
+                        异步非阻塞(synchronous-non-blocking-IO)简称AIO
+                    关于NIO：
+                        1）IO和NIO的区别：
+                            IO： 面向流操作，阻塞的IO；
+                            NIO：面向缓冲区的， 非阻塞IO，有选择器selector；
+                            Selector选择器可以监听多个Channel通道感兴趣的事情(read、write、accept(服务端接收)、connect，实现一个线程管理多个Channel，节省线程切换上下文的资源消耗。Selector只能管理非阻塞的通道，FileChannel是阻塞的，无法管理。
+                                Selector：选择器对象，通道注册、通道监听对象和Selector相关。
+                                SelectorKey：通道监听关键字，通过它来监听通道状态。
+                    BIO、NIO、AIO适用场景：
+                        BIO方式适用于连接数目比较小且固定的架构，这种方式对服务器资源要求比较高，并发局限于应用中，JDK1.4以前的唯一选择。
+                        NIO方式适用于连接数目多且连接比较短（轻操作）的架构，比如聊天服务器，并发局限于应用中，编程比较复杂。
+                        AIO方式使用于连接数目多且连接比较长（重操作）的架构，比如相册服务器，充分调用OS参与并发操作，编程比较复杂，JDK7开始支持。
+         总： rocketMQ使用的是第一种mmap+write的方式。 因为有很多小块数据传输的需求， 效果会比sendfile更好。
+
+
+
+
+
+二、RocketMQ 集群部署模式
+    单 master 模式
+        也就是只有一个 master 节点，非集群。
+    多 master 模式
+        多个 master 节点组成集群，单个 master 节点宕机或者重启对应用没有影响。
+        优点：所有模式中性能最高
+        缺点：单个 master 节点宕机期间，未被消费的消息在节点恢复之前不可用，**消息的实时性**就受到影响。
+        注意：使用同步刷盘可以保证消息不丢失，同时 Topic 相对应的 queue 应该分布在集群中各个节点，而不是只在某各节点上，
+            否则，该节点宕机会对订阅该 topic 的应用造成影响。
+    多 master 多 slave 异步复制模式
+        在多 master 模式的基础上，每个 master 节点都有至少一个对应的 slave。master节点可读可写，但是 slave 只能读不能写，类似于 mysql 的主备模式。
+        优点：在 master 宕机时，消费者可以从 slave 读取消息，消息的实时性不会受影响，性能几乎和多 master 一样。
+        缺点：使用异步复制的同步方式有可能会有消息丢失的问题。
+    多 master 多 slave 同步双写模式
+        同多 master 多 slave 异步复制模式类似，区别在于 master 和 slave 之间的数据同步方式。
+        优点：同步双写的同步模式能保证数据不丢失。
+        缺点：发送单个消息 RT 会略长，性能相比异步复制低10%左右。  目前master宕机之后， slave还不能自动切换为主机。
+        注意：要保证数据可靠，需采用同步刷盘和同步双写的方式，但性能会较其他方式低。
+
+
+三、消息堆积怎么处理
+        先记录一下网址，
+    https://blog.csdn.net/mlydaemon/article/details/105901543
+    https://www.jianshu.com/p/58bb1610fb8c
+    https://help.aliyun.com/knowledge_detail/54347.html
+    总结：
+        1. 先说一下消费MQ消息的负载均衡机制：
+            （1） 发布者： 轮询机制，Producer以轮询的形式，将消息发送至消息队列；
+            （2） 消费着：平均分配机制；
+                   1） 如果 consumer > queue, 则将有空闲的consumer；
+                   2） 如果consumer < queue, 则一个consumer想负责消费多个queue；
+        2. 消息堆积的原因：
+            （1） RocketMQ消息的堆积， 主要考虑两方面，
+                1）Bocker中消息的积压；
+                2）consumer中消息的积压；
+               consumer中的一台机器由于硬件/系统/远程RPC或Java GC导致的该机器上的消息队列不能即使处理，造成消息队列的消息堆积；
+             （2） RocketMQ有push和pull两种消费模式，pull是主动拉取，不会存在消息堆积的情况，push情况下可能存在消息堆积；
+                  说明： push消费模式详情：
+                        1、push消费模式本质上其实一个pull的过程，consumer本质上在执行两个阶段的任务，阶段一是负责从broker端pull消息到consumer端，阶段二负责将拉取的消息push到consumer注册的回调当中。
+                        2、阶段一的pull过程需要其实是一个多个维度的过程，假设我们的broker集群包含3个broker节点，在这个集群上我们创建了一个topic并且topic指定的队列个数为6，那么在这个场景下我们总共有3*6=18个队列，其中3是3个broker，6是每个topic的队列数。
+                        3、在步骤2的基础上，假设我们的consumerGroup只有一个consumer，那么这个consumer就需要负责消费18个队列。
+                        4、由于每个queue的拉取都是由单独任务在驱动的，所以总共有18个拉取任务，由一个线程的串行进行拉取，拉取完后再次重复提交进行二次拉取过程，循环往复持续拉取数据。
+                        5、拉取过程中如果发现消息数据条数超过1000条，或者消息量超过100M，那么我们就暂停消息拉取，延迟50ms后再次发起任务拉取。
+
+
+四、关于RockerMq的一些问题：
+    1. 如何实现高可用的设计？
+        Broker的主从架构和多副本策略；
+    2. RocketMQ的消息消费完成之后呢， 是不会被删除的， 只会改变CommitLog中的状态，依旧存在在commitLog中；
+    3. RocketMQ的负载均衡是怎么实现的：
+        通过topic存储在多个Broker中分布式存储实现；
+        （1） 写入均衡：发送Topic消息到指定的Broker中，为均衡消费做准备；
+        （2） 消费均衡：consumer采用平均算法进行消费的负载均衡； 即consumer和queue的对应关系；
+    4. rocketmq采用pull的方式获取消息，没有真正意义的push操作， 那么pull的具体操作是什么样子的？ （Broker如何处理拉去消息请求？）
+        Consumer首次请求Broker：
+            判断Broker中是否有符合条件的消息？
+            （1） 有： 响应给consumer， 然后等待下次consumer的请求；
+            （2） 没有：继续保持长链接，PullRequestHoldService.Hold 每5秒执行一次检查，  pullRequestTable 有没有新消息，如果有就推送；
+                        每1秒检查commitLog中有没有新消息，有的话就立马写入PullRequestTable表， 并返回请求；
+                        如果没有，则刮起consumer链接，不断开也不返回；
+         使用consumer的offset，在消息消费完成之后， 修改commitLog中的消息状态；
+    5. RocketMq中消息重复消费 和 消息的幂等性问题
+        （1） 消息重复消费 导致原因：
+                1） ack模式：当网络出现问题的时候， 消息消费完成之后的ack 没有正常发送给Broker，导致Broker根据MQ的消息重拾机制进行了重复发送了；
+                2） MQ的消费模式导致： 同一个topic会被不同的group的consumer消费；（这个是资料上写的，个人认知觉得，原因2是正常操作，不在重复消费概念范围，是业务设计。 重复消费应该是表示，同一个消息被同样的业务代码消费多次。）
+                    MQ有两种消费模式，
+                        一种是集群消费模式，即一条消息只会被一个group的一个consumer消费，多个group消费一个topic时，每个group都会有一个consumer消费该消息；
+                        一种是广播消费模式： 一个消息被一个group下的所有consumer消费；
+        （2） 如何防止重复消费 解决方案：
+            。。。。。。。。。
+
+    6. RocketMQ如何保证消息不丢失？ （这个思想和其他的MQ差不多）
+        （1）Producer端：
+            1）send() 方法处理为同步；
+            2）如果发送失败 触发重试机制；
+            Broker集群部署， 如果一个Broker宕机，可以在重拾的时候发送到其他的Broker上；
+        （2）Broker端：
+            1） 修改刷盘策略为同步， 默认是异步的， 当然同步肯定影响刷数据的效率；
+            2） Broker集群部署，主从模式，高可用；
+        （3）Consumer端：消息正常完成之后，进行ack确认；
+
+
+
+其他的一些
+
+https://cloud.tencent.com/developer/article/1384320
+
+
+
+实践
+    https://juejin.cn/post/6844903590444662797
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
