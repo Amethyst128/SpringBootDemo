@@ -28,6 +28,7 @@
         <module>threadpooldemo</module>
         <module>test</module>
         <module>aspect</module>
+        <module>rocketmq</module>
     </modules>
 
 
