@@ -1,0 +1,16 @@
+
+#����mybatis����ļ�λ��
+mybatis:
+  mapper-locations: classpath*:mybatis-mapper/*Mapper.xml
+  config-location: classpath:mybatis-config.xml
+  #ɨ��domain�İ���
+  aliasesPackage: com.zy.mybatisinterceptor.dao.model
+
+datasource:
+  driverLocation: C:\Users\admin\.m2\repository\mysql\mysql-connector-java\8.0.13\mysql-connector-java-8.0.13.jar
+  driver-class-name: com.mysql.jdbc.Driver
+  url: jdbc:mysql://127.0.0.1:3306/amethyst_test
+  username: root
+  password: root
+  ddl-auto: update
+  show-sql: true
