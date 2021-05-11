@@ -77,7 +77,6 @@ RocketMq：
 
 
 
-
 二、RocketMQ 集群部署模式
     单 master 模式
         也就是只有一个 master 节点，非集群。
@@ -158,6 +157,84 @@ RocketMq：
             1） 修改刷盘策略为同步， 默认是异步的， 当然同步肯定影响刷数据的效率；
             2） Broker集群部署，主从模式，高可用；
         （3）Consumer端：消息正常完成之后，进行ack确认；
+
+
+五. 从官网docs get的一些信息
+    features.md ------ 功能特性
+    1. 消息的过滤
+        RocketMQ可以根据消息的tag进行过滤。 rocketMQ消息的过滤是在Broker端进行的， 目的是为了减少Broker和Consumer之间无用消息的网络传输；
+        缺点是： 增加了Broker的负担，实现也相对复杂。
+    2. 消息的可靠性问题如何解决？
+        在单点故障的异常情况下，MQ的主从异步复制 能够保证99%的消息不丢失，但是仍然会有少量的消息可能丢失。 通过同步双写技术可以完全避免单点。
+        但是同步双写会影响到性能，适合对消息可靠性要求极高的场合。  RocketMQ从3.0版本开始支持同步双写。
+    3. 事务消息： RocketMQ消息支持事务消息，通过事务消息能够达到 **分布式事务最终一致性**。
+    4. RocketMQ支持定时消息：
+        主要逻辑：定时消息（即延迟队列）是将消息发送到Broker之后，不会立即被消费，等待到了特定的时间才会投递给真正的topic。
+                定时消息会暂时存储在名为SCHEDULE_TOPIC_XXXXde topic中，并根据delayTimeLevel存入特定的queue，queueId = delayTimeLevel-1，即一个queue中只存储相同延迟时间的消息，保证将有相同发送延迟的消息能够顺序消费；
+        配置延迟的属性： Broker有的配置项messageDelayLevel，默认18个时间取值："1s,5s,10s,30s,1m,2m,3m,4m,5m,6m,7m,8m,9m,10m,20m,30m,1h,2h"。注意messageDelayLevel是broker属性，不属于某个topic；
+    5. 消息重试和处理逻辑：
+        （1）consumer消费失败的俩个场景
+            1）由于消息本身的问题导致消费失败，这种消息立马重试，99%还是不成功，所以最好是提供一种重试机制；
+            2）由于依赖的下游服务不可用 导致的消息消费失败， 这样的错误， 即使是跳过当前的消息去消费下一个，也会连着失败， 所以这种就建议sleep长一点的时间，再去消费下一条，这样能够减轻Broker重试消息的压力；
+        （2）消息重试的主要处理方式： RocketMQ对重试消息的处理是现保存至Topic名称为"SCHEDULE_TOPIC_XXXX"的延迟队列中，后台的定时任务会按照对应的时间进行Delay后重新保存只"%RETRY%+consumerGroup"的重试队列中；
+            RocketMQ会给每个消费组（注意是消费组）创建一个topic为"%RETRY%+consumerGroup"的重试队列（注意这个重视队列是针对消费组 而不是针对每个topic设置的），用于暂时保存因为各种异常俄日导致的Consumer无法消费的消息。
+            考虑到异常回复起来需要一些时间，会给重试队列设置多个重试的界别， 每个重试级别有与之对应的重新投敌的延迟时间， 重试次数越多，延迟投递的延时时间就越大。
+    6. 死信队列 和 死信消息
+        在正常情况下 消费失败 且重试也消费失败的消息，RocketMQ将这些消息存储在死信队列中， 靠人工后期手动在mq console界面进行再次消费；  这些消息称之为"死信消息"；
+    architecture.md 架构
+    7. BrokerServer
+        BrokerServer主要负责消息的存储/投递和查询/以及 服务高可用的保证，为了实现这几个功能， Broker的内部的几个重要的模块需要了解一下：
+            （1） Remoting Module： 整个Broker实体，用来处理来自客户端的所有的请求；
+            （2） clientManager： 负责管理客户端 和 维护consumer的topic的订阅信息；
+            （3） Store Service： 提供接口处理消息存储到硬盘 和 查询功能；
+            （4） HA service： 为高可用服务， 提供Master 和 slave 之间的数据同步功能；
+            （5） Index service： 根据特定的message key，对投递到Broker的消息进行索引服务， 以提供消息的快速查询；
+    8. 问题： 收到消息之前 先创建topic，创建topic时需要指定该topic要存储在哪些broker上，也可以发送消息时候 自动创建topic，  这个是怎么做到的？？？？？？
+
+
+    design.md  设计
+    9. rocketMQ消费消息成功之后，不会删除消息， 只是又该commonLog中的offset的值， 依旧存储在commonLog中；
+        队列中有三个offset， minOffset/consumerOffset/maxOffset
+
+
+    样例：example.md
+    10. 实例：
+        （1）DefaultMQProducer 生产者   DefaultMQProducerConsumer 消费者
+        （2）发消息：
+            producer.setNameServAddr();  // 设置nameServer地址
+            producer.start();
+            producer.setRetryTimesWhenAsyncFailed(3); // 失败之后的重试次数
+            Message message = new Message(.....);
+            SendResult result = producer.send(message);
+            producer.shutdown();
+        (3) 发送单向消息：
+            producer.sendOneWay(message);
+        (4) 发送延迟消息：
+            message.setDalayTimeLevel(3); // 设置延迟等级
+       （5） 发送批量消息：
+            List<Message> messages = new arrayList();
+            messages.add(msg1);
+            messages.add(msg2);
+            producer.send(messages);
+       (6) 消息的过滤消费方式：
+            1） tags
+            2） sql92： 生产者在生产消息之前， 设置属性： producer.setUserProperty();
+                       消费者消费消息之前， 通过sql进行筛选：consumer.subscribe("topicName",MessageSelector.bySql("a between 1 and 3"));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

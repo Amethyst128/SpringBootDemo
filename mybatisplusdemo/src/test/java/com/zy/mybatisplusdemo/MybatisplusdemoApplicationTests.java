@@ -3,11 +3,13 @@ package com.zy.mybatisplusdemo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zy.mybatisplusdemo.controller.UserController;
 import com.zy.mybatisplusdemo.core.enumerate.GradeEnum;
 import com.zy.mybatisplusdemo.dao.mapper.UserDoMapper;
 import com.zy.mybatisplusdemo.dao.model.UserDo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -43,12 +45,21 @@ public class MybatisplusdemoApplicationTests {
                 .setUserName("zhangsan")
                 .setGrade(GradeEnum.HIGH);
         System.out.println("开始插入用户信息");
-        int result = userDoMapper.insert(user);
-        if (result > 0) {
-            System.out.println("插入用户成功");
-        } else {
-            System.out.println("插入用户失败");
-        }
+        List<UserDo> userDos = userDoMapper.getUserList();
+//        int result = userDoMapper.insert(user);
+//        if (result > 0) {
+//            System.out.println("插入用户成功");
+//        } else {
+//            System.out.println("插入用户失败");
+//        }
+    }
+
+    @Autowired
+    private UserController userController;
+
+    @Test
+    public void testGetUserList() {
+        List<UserDo> userDos = userController.getUserList();
     }
 
     //条件查询<放在map中>
@@ -81,22 +92,22 @@ public class MybatisplusdemoApplicationTests {
                 .setUserName("Amethyst")
                 .setUpdateVersion(1);
 
-        try {
-            System.out.println("开始休眠");
-            // 可以延迟10000s ,手动去修改数据库这条数据的version 为其他数字 ，最后的结果就是无法更新成功
-            Thread.sleep(10000);
-            // Thread.sleep(0);
-            System.out.println("休眠结束");
-            int result = userDoMapper.updateById(user); // 3.根据ID修改这条数据（mybatis plus 的内层帮我们多加了一个where条件，保证乐观锁的实现） /
-            if (result > 0) {
-                System.out.println("修改用户成功");
-            } else {
-                System.out.println("修改用户失败");
-            }
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+//        try {
+        System.out.println("开始休眠");
+        // 可以延迟10000s ,手动去修改数据库这条数据的version 为其他数字 ，最后的结果就是无法更新成功
+//            Thread.sleep(10000);
+        // Thread.sleep(0);
+        System.out.println("休眠结束");
+        int result = userDoMapper.updateById(user); // 3.根据ID修改这条数据（mybatis plus 的内层帮我们多加了一个where条件，保证乐观锁的实现） /
+        if (result > 0) {
+            System.out.println("修改用户成功");
+        } else {
+            System.out.println("修改用户失败");
         }
+//        } catch (InterruptedException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
     }
 
     /**

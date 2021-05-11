@@ -284,6 +284,9 @@ public class AnyTest {
     @Test
     public void testNullPE() {
         UserDo userDo = new UserDo();
+        user
+
+
         userDo.setListThings(null);
         if (userDo.getListThings() == null) {
             System.out.println("1");
@@ -342,5 +345,21 @@ public class AnyTest {
 
     }
 
+    @Test
+    public void testDate2() {
+        Calendar instance = Calendar.getInstance();
+        instance.setTime(new Date());
+        int a = instance.get(Calendar.DAY_OF_MONTH);
+        System.out.println(String.valueOf(System.currentTimeMillis()).concat("622103199205186025".substring(10, 14)));
+    }
+
+    @Test
+    public void testRemoveList() {
+        List<String> list1 = new ArrayList<>();
+        list1.add("1");
+        list1.add("2");
+        List<String> list = list1.stream().filter(t->t.equals("3")).collect(Collectors.toList());
+        list1.removeAll(list);
+    }
 
 }
